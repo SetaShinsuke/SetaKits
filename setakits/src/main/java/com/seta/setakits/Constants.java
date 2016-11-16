@@ -7,4 +7,6 @@ package com.seta.setakits;
 public class Constants {
 
     public static String LOG_TAG_S = "seta";
+    public static String DATABASE_NAME = "seta.db";
+    public static String DATABASE_NAME_BK = "seta_bk.db";
 }
