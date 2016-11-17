@@ -19,8 +19,8 @@ public class DAOHelper<T extends DBable> {
     private String tableName;
     private DAOHelpable<T> mDAOHelpable;
 
-    public DAOHelper(String name, DAOHelpable<T> DAOHelpable) {
-        this.tableName = name;
+    public DAOHelper(String tableName, DAOHelpable<T> DAOHelpable) {
+        this.tableName = tableName;
         this.mDAOHelpable = DAOHelpable;
     }
 

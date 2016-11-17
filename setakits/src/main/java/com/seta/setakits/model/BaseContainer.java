@@ -38,7 +38,7 @@ public class BaseContainer<T extends DBable> {
      * @param id 某类型id;
      * @return 某类型对象;
      */
-    public T getUniqueTById(String id){
+    public T getUniqueTFromMem(String id){
         T object = objectHashMap.get(id);
         if(object==null){
             object = mDAOHelpable.buildEntity();
