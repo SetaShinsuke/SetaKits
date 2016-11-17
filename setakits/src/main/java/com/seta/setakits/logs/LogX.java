@@ -18,8 +18,8 @@ public class LogX {
 
     private static String logTag = Constants.LOG_TAG_S;
 
-    public static void init(Context context){
-        LogConfig.configure(context);
+    public static void init(Context context , String logFileName){
+        LogConfig.configure(context , logFileName);
         logger = org.apache.log4j.Logger.getLogger("Log");
         logger.trace("Log Init");
         boolean isDebuggable = (0 != (context.getApplicationInfo().flags & ApplicationInfo.FLAG_DEBUGGABLE));

@@ -15,19 +15,33 @@ import java.util.List;
  * Created by SETA_WORK on 2016/11/16.
  */
 
-public class BaseDAOHelper<T extends DBable> {
+public class DAOHelper<T extends DBable> {
     private String tableName;
     private DAOHelpable<T> mDAOHelpable;
 
-    public BaseDAOHelper(String name ,DAOHelpable<T> DAOHelpable){
+    public DAOHelper(String name, DAOHelpable<T> DAOHelpable) {
         this.tableName = name;
         this.mDAOHelpable = DAOHelpable;
     }
 
-    public T findObjById( SQLiteDatabase database , String id , boolean doClose){
-        T emptyObj = mDAOHelpable.buildEntity();
-        List<T> list = find(database ,
-                                "UID=?", new String[]{String.valueOf(id)}, null, null, "1", false);
+    /**
+     * 通过 id 获取唯一的 {@link T} 对象
+     * 查找完成后自动关闭数据库
+     */
+    public T getUniqueObjById(String uid) {
+        if (uid == null) {
+            return null;
+        }
+        T obj = mDAOHelpable.buildUniqueById(uid);
+        T objDB = findObjById(uid);
+        if (objDB == null) {
+            saveOne(obj);
+        }
+        return obj;
+    }
+
+    private T findObjById(String id) {
+        List<T> list = find("UID=?", new String[]{String.valueOf(id)}, null, null, "1", false);
         if (list.isEmpty()) return null;
         return list.get(0);
     }
@@ -35,10 +49,9 @@ public class BaseDAOHelper<T extends DBable> {
     /**
      * 从数据库中查找
      */
-    private ArrayList<T> find(SQLiteDatabase sqLiteDatabase ,
-                                String whereClause, String[] whereArgs,
-                                String groupBy, String orderBy, String limit , boolean doClose) {
-//        SQLiteDatabase sqLiteDatabase = KApi.getApi().getDbHelper().getReadableDatabase();
+    private ArrayList<T> find(String whereClause, String[] whereArgs,
+                              String groupBy, String orderBy, String limit, boolean doClose) {
+        SQLiteDatabase sqLiteDatabase = mDAOHelpable.getDB().getWritableDatabase();
         T entity;
         java.util.ArrayList<T> toRet = new ArrayList<>();
         Cursor c = sqLiteDatabase.query(tableName, null,
@@ -46,38 +59,38 @@ public class BaseDAOHelper<T extends DBable> {
         try {
             while (c.moveToNext()) {
                 entity = mDAOHelpable.buildEntity();
-                mDAOHelpable.inflate(entity,c);
+                mDAOHelpable.inflate(entity, c);
                 toRet.add(entity);
             }
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
             c.close();
-            if(doClose) {
+            if (doClose) {
                 sqLiteDatabase.close();
             }
         }
         return toRet;
     }
 
-    public ArrayList<T> findAll(SQLiteDatabase sqLiteDatabase){
-        return find(sqLiteDatabase , null , null, null, null, null , true);
+    public ArrayList<T> findAll() {
+        return find(null, null, null, null, null, true);
     }
 
     private boolean saveByHelper(T obj, SQLiteDatabase db) {
         ContentValues values = mDAOHelpable.getValues(obj);
         long ret;
         //如果数据库中已经有该id对应的数据，则进行update.否则insert.
-        T inoutDb = findObjById(db , obj.getId(), false);
-        if( inoutDb!=null){
-            obj.setDbId( inoutDb.getDbId() );
-        }else {
+        T inoutDb = findObjById(obj.getId());
+        if (inoutDb != null) {
+            obj.setDbId(inoutDb.getDbId());
+        } else {
             obj.setDbId(null);
         }
 
-        if (obj.getDbId() == null ) {
+        if (obj.getDbId() == null) {
             ret = db.insert(tableName, null, values);
-            obj.setDbId( ret );
+            obj.setDbId(ret);
         } else {
             ret = db.update(tableName, values, "ID = ?", new String[]{String.valueOf(obj.getDbId())});
         }
@@ -85,10 +98,10 @@ public class BaseDAOHelper<T extends DBable> {
         return ret > 0;
     }
 
-    public boolean saveOne(final T obj ,final DBHelper dbHelper) {
+    public boolean saveOne(final T obj) {
         boolean ret = false;
         try {
-            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            SQLiteDatabase db = mDAOHelpable.getDB().getWritableDatabase();
             ret = saveByHelper(obj, db);
             db.close();
         } catch (Exception e) {
@@ -96,7 +109,7 @@ public class BaseDAOHelper<T extends DBable> {
             handler.postDelayed(new Runnable() {
                 public void run() {
                     // Get new entry
-                    SQLiteDatabase db = dbHelper.getWritableDatabase();
+                    SQLiteDatabase db = mDAOHelpable.getDB().getWritableDatabase();
                     saveByHelper(obj, db);
                     db.close();
                 }
@@ -108,21 +121,25 @@ public class BaseDAOHelper<T extends DBable> {
     /**
      * 批量保存
      */
-    public void saveInTx(Collection<T> objects , final DBHelper dbHelper , boolean doClose) {
-        SQLiteDatabase sqLiteDatabase = dbHelper.getWritableDatabase();
-        try{
+    public void saveInTx(Collection<T> objects) {
+        SQLiteDatabase sqLiteDatabase = mDAOHelpable.getDB().getWritableDatabase();
+        try {
             sqLiteDatabase.beginTransaction();
-            for(T object: objects){
-                saveByHelper(object,sqLiteDatabase);
+            for (T object : objects) {
+                saveByHelper(object, sqLiteDatabase);
             }
             sqLiteDatabase.setTransactionSuccessful();
-        }catch (Exception e){
+        } catch (Exception e) {
             LogX.e(getClass().getName() + " Error in saving inouts in transaction " + e.getMessage());
-        }finally {
+        } finally {
             sqLiteDatabase.endTransaction();
-            if(doClose) {
-                sqLiteDatabase.close();
-            }
+            sqLiteDatabase.close();
         }
+    }
+
+    public void deleteAll() {
+        SQLiteDatabase sqLiteDatabase = mDAOHelpable.getDB().getWritableDatabase();
+        sqLiteDatabase.delete(tableName, null, null);
+        sqLiteDatabase.close();
     }
 }

@@ -35,4 +35,8 @@ public class CursorFactory implements SQLiteDatabase.CursorFactory {
             return new SQLiteCursor(sqLiteDatabase, sqLiteCursorDriver, editTable, sqLiteQuery);
         }
 
+    public boolean isDebugEnabled(){
+        return debugEnabled;
+    }
+
 }

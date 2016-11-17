@@ -13,9 +13,6 @@ import static com.seta.setakits.Constants.LOG_TAG_S;
 
 public class LogConfig {
 
-
-    static private String fileName = "peep_log.log";
-
     private long maxFileSize = 1024 * 1024;
     public static int level = 1;
     public static int V = 1;
@@ -24,7 +21,7 @@ public class LogConfig {
     public static int W = 4;
     public static int E = 5;
 
-    public static void configure(Context context) {
+    public static void configure(Context context , String logFileName) {
         final LogConfigurator logConfigurator = new LogConfigurator();
 //        LogX.v("hehe","getStorageState() : " + getStorageState());
         if (!getStorageState()) {
@@ -39,8 +36,8 @@ public class LogConfig {
                 dir.mkdirs();
             }
             dir = dir.getParentFile();
-            logConfigurator.setFileName(dir.getAbsolutePath() + File.separator + fileName);
-            LogX.v(LOG_TAG_S, "Log fold : " + dir.getAbsolutePath() + File.separator + fileName);
+            logConfigurator.setFileName(dir.getAbsolutePath() + File.separator + logFileName);
+            LogX.v(LOG_TAG_S, "Log fold : " + dir.getAbsolutePath() + File.separator + logFileName);
             logConfigurator.setRootLevel(i2L(level));
             logConfigurator.setUseLogCatAppender(false);
             // Set log level of a specific logger
