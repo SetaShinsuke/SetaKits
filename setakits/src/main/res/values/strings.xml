@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">SetaKits</string>
+
+    <string name="to_string">%1$s!</string>
 </resources>

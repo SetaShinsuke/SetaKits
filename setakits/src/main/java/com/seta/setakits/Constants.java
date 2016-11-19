@@ -10,13 +10,5 @@ import android.support.v7.app.AppCompatActivity;
 public class Constants {
 
     public static String LOG_TAG_S = "seta";
-
-    public static class MainActivity extends AppCompatActivity {
-
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_main);
-        }
-    }
+    public static String LOG_TAG_SETA_UTILS = "seta_utils";
 }

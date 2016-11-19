@@ -14,4 +14,5 @@ public class UtilMethods {
     private static Uri resourceIdToUri(Context context, int resourceId) {
         return Uri.parse(ANDROID_RESOURCE + context.getPackageName() + FOREWARD_SLASH + resourceId);
     }
+
 }
