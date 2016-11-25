@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/SetaKits.iml" filepath="$PROJECT_DIR$/SetaKits.iml" />
-      <module fileurl="file://$PROJECT_DIR$/setakits/setakits.iml" filepath="$PROJECT_DIR$/setakits/setakits.iml" />
-    </modules>
-  </component>
-</project>
