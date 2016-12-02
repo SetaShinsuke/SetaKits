@@ -8,4 +8,5 @@ public interface DBable {
     Long getDbId();
     void setDbId(Long dbId);
     String getId();
+    void setId(String id);
 }

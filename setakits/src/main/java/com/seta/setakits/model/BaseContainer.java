@@ -42,6 +42,7 @@ public class BaseContainer<T extends DBable> {
         T object = objectHashMap.get(id);
         if(object==null){
             object = mDAOHelpable.buildEntity();
+            object.setId(id);
             put(id, object);
         }
         return object;
