@@ -49,7 +49,7 @@ public class BaseContainer<T extends DBable> {
     }
 
     /**
-     * 将数据库中的某类型恢复到内存中
+     * 将数据库中的某类型(全部)恢复到内存中
      */
     public void restore(){
         ArrayList<T> objects = mDAOHelpable.getHelper().findAll();

@@ -103,6 +103,12 @@ public class LogX {
         }
     }
 
+    public static void d(String tag,String s,Throwable t){
+        if(logLevel<=Log.DEBUG) {
+            Log.d(tag , s , t);
+        }
+    }
+
     public static void i( String s){
         i(getTag(), s );
     }
@@ -112,6 +118,11 @@ public class LogX {
             if(logFileLevel<=Log.INFO) {
                 trace2File(tag,s);
             }
+        }
+    }
+    public static void i(String tag,String s,Throwable t){
+        if(logLevel<=Log.INFO) {
+            Log.d(tag , s , t);
         }
     }
 
@@ -146,5 +157,9 @@ public class LogX {
     private static final String TTag = "tmp";
     public static void tLog(String msg){
         v(TTag,msg);
+    }
+
+    public static void mark(){
+        LogX.e("有调试应用未删除 ! ");
     }
 }
