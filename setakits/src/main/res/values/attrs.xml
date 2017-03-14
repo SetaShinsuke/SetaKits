@@ -3,4 +3,8 @@
     <declare-styleable name="ResizableImageView">
         <attr name="resize_by_width" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="RadiusLayout">
+        <attr name="layout_radius" format="dimension" />
+    </declare-styleable>
 </resources>

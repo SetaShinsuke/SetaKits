@@ -5,6 +5,7 @@ import com.seta.setakits.db.DBable;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by SETA_WORK on 2016/11/17.
@@ -56,6 +57,10 @@ public class BaseContainer<T extends DBable> {
         for(T object:objects){
             put(object.getId(),object);
         }
+    }
+
+    public List<T> getTList(){
+        return mDAOHelpable.getHelper().findAll();
     }
 
     /**
